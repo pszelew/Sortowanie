@@ -3,21 +3,24 @@
 #include <iostream>
 class Sortowanko
 {
-private:
-	Sortowanko() {}; //konstrukotr klasy sortowanko
-	~Sortowanko() {}; //dekonstruktor klasy sortowanko
-    template <class typ>
-	static void zamien_elementy(typ *tablica, int pierwszy, int drugi);
-	template <class typ>
-    static void polacz_posortowane_tablice(typ *tablica, int lewy, int prawy, int ostatni, bool rosnaco);
-public:
-
-    template <class typ>
-	static void scalanie(typ *tablica, int pierwszy, int ostatni, bool rosnaco); //statyczna metoda scalanie
-	template <class typ>
-	static void quick_sort(typ *tablica,int pierwszy, int ostatni, bool rosnaco); //statyczna metoda quick_sort
-	template <class typ>
-	static void intro_sort(typ *tablica,int pierwszy, int ostatni, bool rosnaco); //statyczna metoda intro_sort
+    private:
+        Sortowanko() {}; //konstrukotr klasy sortowanko
+        ~Sortowanko() {}; //dekonstruktor klasy sortowanko
+        template <class typ>
+        static void zamien_elementy(typ *tablica, int pierwszy, int drugi);
+        template <class typ>
+        static void polacz_posortowane_tablice(typ *tablica, int lewy, int prawy, int ostatni, bool rosnaco);
+        template <class typ>
+        static void heapify(typ *tablica, int pierwszy, int ostatni, int node, bool rosnaco);
+        template <class typ>
+        static void heap_sort(typ *tablica, int pierwszy, int ostatni, bool rosnaco); //statyczna metoda kopcowanie
+    public:
+        template <class typ>
+        static void scalanie(typ *tablica, int pierwszy, int ostatni, bool rosnaco); //statyczna metoda scalanie
+        template <class typ>
+        static void quick_sort(typ *tablica,int pierwszy, int ostatni, bool rosnaco); //statyczna metoda quick_sort
+        template <class typ>
+        static void intro_sort(typ *tablica,int pierwszy, int ostatni, bool rosnaco); //statyczna metoda intro_sort
 };
 
 /*
@@ -27,7 +30,6 @@ int srodek -> ostatni element lewej tablicy
 int ostatni -> ostatni element prawej tablicy
 bool rosnaco -> true gdy elementy sortowane maja byc rosnaco, false gdy elementy sortowane maja byc malejaco
 */
-
 
 template <class typ>
 void Sortowanko::polacz_posortowane_tablice(typ *tablica, int pierwszy, int srodek, int ostatni, bool rosnaco)
@@ -79,6 +81,7 @@ void Sortowanko::polacz_posortowane_tablice(typ *tablica, int pierwszy, int srod
 
 
 
+
 template <class typ>
 void Sortowanko::zamien_elementy(typ *tablica, int pierwszy, int drugi)
 {
@@ -86,6 +89,68 @@ void Sortowanko::zamien_elementy(typ *tablica, int pierwszy, int drugi)
     tablica[pierwszy]=tablica[drugi];
     tablica[drugi]=i;
 }
+/*Budujemy kopiec poczawszy od dolu*/
+
+template <class typ>
+void Sortowanko::heapify(typ *tablica, int pierwszy, int ostatni, int node, bool rosnaco)
+{
+    int maximum=node;
+    int lewy=2*node-pierwszy+1;
+    int prawy=2*node-pierwszy+2;
+    if(rosnaco)
+    {
+        if(lewy<=ostatni&&tablica[lewy]>tablica[maximum])
+        {
+            maximum=lewy;
+        }
+        if(prawy<=ostatni&&tablica[prawy]>tablica[maximum])
+        {
+            maximum=prawy;
+        }
+
+        if(node!=maximum)
+        {
+            zamien_elementy(tablica, maximum, node);
+            heapify(tablica, pierwszy, ostatni, maximum, rosnaco);
+        }
+    }
+    else
+    {
+        if(lewy<=ostatni&&tablica[lewy]<tablica[maximum])
+        {
+            maximum=lewy;
+        }
+        if(prawy<=ostatni&&tablica[prawy]<tablica[maximum])
+        {
+            maximum=prawy;
+        }
+
+        if(node!=maximum)
+        {
+            zamien_elementy(tablica, maximum, node);
+            heapify(tablica, pierwszy, ostatni, maximum, rosnaco);
+        }
+    }
+}
+
+template <class typ>
+void Sortowanko::heap_sort(typ *tablica, int pierwszy, int ostatni, bool rosnaco)
+{
+    /*Z drzewa binarnego tworzymy kopiec */
+    for(int i=((ostatni+pierwszy-1)/2);i>=0;i--)
+    {
+            heapify(tablica, pierwszy, ostatni, i, rosnaco);
+    }
+
+    for(int i=ostatni;i>=pierwszy;i--)
+    {
+        zamien_elementy(tablica, 0, i);
+        /*Wywolanie kopcowania dla zredukowanego kopca*/
+        heapify(tablica, pierwszy, i-1, pierwszy, rosnaco);
+    }
+}
+
+
 
 template <class typ> //sortowanie przez scalanie jako metoda statyczna klasy Sortowanie
 void Sortowanko::scalanie(typ *tablica, int pierwszy, int ostatni, bool rosnaco)

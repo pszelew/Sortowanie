@@ -24,6 +24,10 @@ int main()
 	{
 		tablica[i] = rand();
 	}
+
+    int tablica_tmp[]={10,15,7,16,5,4,2,18,19,6};
+
+
     chrono::high_resolution_clock::time_point t1;
     chrono::high_resolution_clock::time_point t2;
 
@@ -42,15 +46,19 @@ int main()
     else if(tryb==3)
     {
         t1 = chrono::high_resolution_clock::now();
-        Sortowanko::quick_sort(tablica, 0, rozmiar - 1, rosnaco);
+        Sortowanko::quick_sort(tablica, 0, rozmiar-1, rosnaco);
         t2 = chrono::high_resolution_clock::now();
     }
+    for(int i=0;i<rozmiar;i++)
+    {
+        cout<< tablica[i]<<endl;
+    }
+
     cout << chrono::duration_cast<chrono::milliseconds>(t2 - t1).count() << "ms";
     if(test_posortowania(tablica, rozmiar, rosnaco))
         cout<<"Tablica posortowana poprawnie"<<endl;
     else
         cout<<"Blad sortowania"<<endl;
-
 
 
     delete(tablica);
