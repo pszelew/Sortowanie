@@ -8,44 +8,40 @@ private:
 	~Sortowanko() {}; //dekonstruktor klasy sortowanko
     template <class typ>
 	static void zamien_elementy(typ *tablica, int pierwszy, int drugi);
+	template <class typ>
+    static void polacz_posortowane_tablice(typ *tablica, int lewy, int prawy, int ostatni, bool rosnaco);
 public:
+
     template <class typ>
 	static void scalanie(typ *tablica, int pierwszy, int ostatni, bool rosnaco); //statyczna metoda scalanie
 	template <class typ>
 	static void quick_sort(typ *tablica,int pierwszy, int ostatni, bool rosnaco); //statyczna metoda quick_sort
+	template <class typ>
+	static void intro_sort(typ *tablica,int pierwszy, int ostatni, bool rosnaco); //statyczna metoda intro_sort
 };
+
+/*
+typ *tablica -> tablica zawierajaca dwie posortowane podtablice
+int lewy -> pierwszy element lewej tablicy
+int srodek -> ostatni element lewej tablicy
+int ostatni -> ostatni element prawej tablicy
+bool rosnaco -> true gdy elementy sortowane maja byc rosnaco, false gdy elementy sortowane maja byc malejaco
+*/
 
 
 template <class typ>
-void Sortowanko::zamien_elementy(typ *tablica, int pierwszy, int drugi)
+void Sortowanko::polacz_posortowane_tablice(typ *tablica, int pierwszy, int srodek, int ostatni, bool rosnaco)
 {
-    typ i=tablica[pierwszy];
-    tablica[pierwszy]=tablica[drugi];
-    tablica[drugi]=i;
-}
+    int sortowany=0;
+    int prawy=srodek+1;
+    int lewy=pierwszy;
+    typ tablica_temp[ostatni-lewy+1];
 
-template <class typ> //sortowanie przez scalanie jako metoda statyczna klasy Sortowanie
-void Sortowanko::scalanie(typ *tablica, int pierwszy, int ostatni, bool rosnaco)
-{
-    int srodek;
-
-    if (pierwszy<ostatni)
+    while (lewy <= srodek && prawy <= ostatni) //petla laczaca dwie posortowane tablice
     {
-        int prawy, lewy, sortowany; //zmienna ustalajaca srodek tablicy ,  zmienne pomocniczne w procesie laczenia tablic
-        typ tablica_temp[ostatni-pierwszy+1]; //tablica pomocnicza przy zamianie zmiennych
-        srodek = ((pierwszy + ostatni) / 2);
-        scalanie(tablica, pierwszy, srodek, rosnaco); //rekurencja dla lewej tablicy
-        scalanie(tablica,srodek+1, ostatni,rosnaco); //rekurencja dla prawej tablicy
-
-        /*Laczenie dwoch tablic wraz z sortowaniem*/
-        lewy = pierwszy;
-        prawy = srodek + 1;
-        sortowany = 0;
-        while (lewy <= srodek && prawy <= ostatni)
-        {
             if(rosnaco)
             {
-                if (tablica[lewy] < tablica[prawy]) //jezeli lewy mniejsz, to on bedzie nastepny w tablicy -> porownaj nastepny lewy
+                if (tablica[lewy] < tablica[prawy]) //jezeli lewy mniejszy, to on bedzie nastepny w tablicy -> porownaj nastepny lewy
                 {
                     tablica_temp[sortowany++] = tablica[lewy++];
                 }
@@ -56,7 +52,7 @@ void Sortowanko::scalanie(typ *tablica, int pierwszy, int ostatni, bool rosnaco)
             }
             else
             {
-                if (tablica[lewy] > tablica[prawy]) //jezeli lewy mniejsz, to on bedzie nastepny w tablicy -> porownaj nastepny lewy
+                if (tablica[lewy] > tablica[prawy]) //jezeli prawy mniejszy, to on bedzie nastepny w tablicy -> porownaj nastepny element od lewej
                 {
                     tablica_temp[sortowany++] = tablica[lewy++];
                 }
@@ -73,14 +69,38 @@ void Sortowanko::scalanie(typ *tablica, int pierwszy, int ostatni, bool rosnaco)
 
         while(prawy<=ostatni)
         {
-             tablica_temp[sortowany++] = tablica[prawy++]; //jezli prawa tablica skonczyla sie szybciej, to nastepne elementy beda pochodzic z lewej tablicy
+             tablica_temp[sortowany++] = tablica[prawy++]; //jezeli lewa tablica skonczyla sie szybciej, to uzupelniamy reszte elementami prawej tablicy
         }
 
-        for ( int i = pierwszy, j = 0; i <= ostatni; i++, j++ )
+        for ( int i = pierwszy, j = 0; i <= ostatni; i++, j++ ) //przepisanie elementow z tablicy_tmp do ostatecznej
             tablica[i] = tablica_temp[j];
-    }
 }
 
+
+
+
+template <class typ>
+void Sortowanko::zamien_elementy(typ *tablica, int pierwszy, int drugi)
+{
+    typ i=tablica[pierwszy];
+    tablica[pierwszy]=tablica[drugi];
+    tablica[drugi]=i;
+}
+
+template <class typ> //sortowanie przez scalanie jako metoda statyczna klasy Sortowanie
+void Sortowanko::scalanie(typ *tablica, int pierwszy, int ostatni, bool rosnaco)
+{
+
+    if (pierwszy<ostatni)
+    {
+        int srodek = ((pierwszy + ostatni) / 2);
+        scalanie(tablica, pierwszy, srodek, rosnaco); //rekurencja dla lewej tablicy
+        scalanie(tablica,srodek+1, ostatni,rosnaco); //rekurencja dla prawej tablicy
+
+        polacz_posortowane_tablice(tablica,pierwszy, srodek, ostatni,rosnaco); //laczenie dwoch posortowanych tablic
+    }
+
+}
 template <class typ> //quick sort jako metoda statyczna klasy Sortowanie
 void Sortowanko::quick_sort(typ *tablica, int pierwszy, int ostatni, bool rosnaco)
 {

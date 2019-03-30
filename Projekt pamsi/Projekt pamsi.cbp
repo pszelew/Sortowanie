@@ -30,10 +30,14 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="Sortowanko.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="main.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />
