@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1553175619 source:c:\users\patryk\desktop\pamsi projekt\projekt pamsi\main.cpp
+	<stdio.h>
+	<stdlib.h>
+	<iostream>
+	<cstdlib>
+	<ctime>
+	<time.h>
+	"Sortowanko.h"
+
+1553175775 c:\users\patryk\desktop\pamsi projekt\projekt pamsi\sortowanko.h
+	<iostream>
+
