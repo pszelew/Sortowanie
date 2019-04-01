@@ -1,67 +1,40 @@
-
 #include "main.h"
-#include "Sortowanko.h"
+
 
 using namespace std;
 
-
-
 int main()
 {
-	int rozmiar;
+    remove("intro_sort.txt");
+    remove("merge_sort.txt");
+    remove("quick_sort.txt");
 	bool rosnaco = true;
-	int tryb;
-    cout << "Hej, program sortuje sobie tablice, bo moze! !\n";
-	cout << "Podaj wielkosc tablicy";
-	cin >> rozmiar;
-	cout<< "Jesli roznaco, podaj 1, jesli malejaco podaj  0";
-	cin >> rosnaco;
-	cout<< "Wybierz tryb sortowania: 1-merge sort, 2-quicksort";
-	cin >> tryb;
-	int *tablica = new int[rozmiar];
-	srand(time(NULL));
-	for (int i = 0; i < rozmiar; i++)
-	{
-		tablica[i] = rand();
-	}
+	int ilosc_tablic=100;
+    int *parametry = new int[3];
 
-    int tablica_tmp[]={10,15,7,16,5,4,2,18,19,6};
+    cout << "Program rozpoczyna prace...";
 
-
-    chrono::high_resolution_clock::time_point t1;
-    chrono::high_resolution_clock::time_point t2;
-
-    if(tryb==1)
-    {
-        t1 = chrono::high_resolution_clock::now();
-        Sortowanko::scalanie(tablica, 0, rozmiar - 1, rosnaco);
-        t2 = chrono::high_resolution_clock::now();
-    }
-	else if(tryb==2)
-    {
-        t1 = chrono::high_resolution_clock::now();
-        Sortowanko::quick_sort(tablica, 0, rozmiar - 1, rosnaco);
-        t2 = chrono::high_resolution_clock::now();
-    }
-    else if(tryb==3)
-    {
-        t1 = chrono::high_resolution_clock::now();
-        Sortowanko::quick_sort(tablica, 0, rozmiar-1, rosnaco);
-        t2 = chrono::high_resolution_clock::now();
-    }
-    for(int i=0;i<rozmiar;i++)
-    {
-        cout<< tablica[i]<<endl;
-    }
-
-    cout << chrono::duration_cast<chrono::milliseconds>(t2 - t1).count() << "ms";
-    if(test_posortowania(tablica, rozmiar, rosnaco))
-        cout<<"Tablica posortowana poprawnie"<<endl;
-    else
-        cout<<"Blad sortowania"<<endl;
+    for(int x=1;x<=3;x++)
+        for(int y=1;y<=8;y++)
+            for(int z=1;z<=5;z++)
+            {
+                parametry[0]=x;
+                parametry[1]=y;
+                parametry[2]=z;
+                if(!test_wydajnosci(parametry, ilosc_tablic,rosnaco))
+                    return -1;
+            }
 
 
-    delete(tablica);
+
+    delete[] parametry;
     system("PAUSE");
+
 }
+
+
+
+
+
+
 

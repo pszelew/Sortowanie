@@ -1,16 +1,18 @@
 # depslib dependency file v1.0
-1553965532 source:c:\users\patryk\desktop\pamsi projekt\projekt pamsi\main.cpp
+1554033934 source:c:\users\patryk\desktop\pamsi projekt\projekt pamsi\main.cpp
 	"main.h"
-	"Sortowanko.h"
 
-1553965428 c:\users\patryk\desktop\pamsi projekt\projekt pamsi\sortowanko.h
+1553986184 c:\users\patryk\desktop\pamsi projekt\projekt pamsi\sortowanko.h
 	<iostream>
+	<cmath>
 
-1553937945 c:\users\patryk\desktop\pamsi projekt\projekt pamsi\main.h
+1554038473 c:\users\patryk\desktop\pamsi projekt\projekt pamsi\main.h
+	"Sortowanko.h"
 	<stdio.h>
 	<stdlib.h>
 	<iostream>
 	<cstdlib>
 	<ctime>
 	<chrono>
+	<fstream>
 

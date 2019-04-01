@@ -1,11 +1,14 @@
 #ifndef SORT_H
 #define SORT_H
 #include <iostream>
+#include <cmath>
 class Sortowanko
 {
     private:
         Sortowanko() {}; //konstrukotr klasy sortowanko
-        ~Sortowanko() {}; //dekonstruktor klasy sortowanko
+        ~Sortowanko() {}; //destruktor klasy sortowanko
+        template <class typ>
+        static int podziel_tablice(typ *tablica, int pierwszy, int ostatni, bool rosnaco);
         template <class typ>
         static void zamien_elementy(typ *tablica, int pierwszy, int drugi);
         template <class typ>
@@ -13,8 +16,12 @@ class Sortowanko
         template <class typ>
         static void heapify(typ *tablica, int pierwszy, int ostatni, int node, bool rosnaco);
         template <class typ>
-        static void heap_sort(typ *tablica, int pierwszy, int ostatni, bool rosnaco); //statyczna metoda kopcowanie
+        static void intro_sort_temp(typ *tablica,int pierwszy, int ostatni, bool rosnaco, int glebokosc); //statyczna metoda intro_sort
+        template <class typ>
+        static int wybierz_pivot(typ *tablica, int pierwszy, int ostatni);
     public:
+        template <class typ>
+        static void heap_sort(typ *tablica, int pierwszy, int ostatni, bool rosnaco); //statyczna metoda kopcowanie
         template <class typ>
         static void scalanie(typ *tablica, int pierwszy, int ostatni, bool rosnaco); //statyczna metoda scalanie
         template <class typ>
@@ -22,6 +29,87 @@ class Sortowanko
         template <class typ>
         static void intro_sort(typ *tablica,int pierwszy, int ostatni, bool rosnaco); //statyczna metoda intro_sort
 };
+
+template <class typ>
+int Sortowanko::wybierz_pivot(typ *tablica, int pierwszy, int ostatni)
+{
+    int srodek=(pierwszy+ostatni)/2;
+    int a=tablica[pierwszy];
+    int b=tablica[srodek];
+    int c=tablica[ostatni];
+    if (a < b && b < c)
+        return (srodek);
+    if (a < c && c <= b)
+        return (ostatni);
+    if (b <= a && a < c)
+        return (pierwszy);
+    if (b < c && c <= a)
+        return (ostatni);
+    if (c <= a && a < b)
+        return (pierwszy);
+    if (c <= b && b <= a)
+        return (srodek);
+    return 0;
+}
+
+
+template <class typ>
+int Sortowanko::podziel_tablice(typ *tablica, int pierwszy, int ostatni, bool rosnaco)
+{
+    //podziel tablice i na lewo przerzuc elementy mniejsze od i, na prawo wieksze od i
+        int pivot_idx=wybierz_pivot(tablica,pierwszy,ostatni);
+        int pivot = tablica[pivot_idx];   //element porownywany
+        int i=pierwszy, j=ostatni; //zmienne sterujace wypelnianiem tablic
+        if(rosnaco)
+        {
+            while(true)
+            {
+                while(tablica[j]>pivot)
+                {
+                    j--;
+                }
+                while(tablica[i]<pivot)
+                {
+                    i++;
+                }
+
+                if (i < j) // gdy liczniki sie jeszcze nie minely, ale trzeba zamienic liczby
+                {
+                    zamien_elementy(tablica, i, j);
+                    i++;
+                    j--;
+                }
+                else
+                    return j; //poszukiwana granica podzialu
+            }
+        }
+        else
+        {
+             while(true)
+            {
+                while(tablica[j]<pivot)
+                {
+                    j--;
+                }
+                while(tablica[i]>pivot)
+                {
+                    i++;
+                }
+
+                if (i < j) // gdy liczniki sie jeszcze nie minely, ale trzeba zamienic liczby
+                {
+                    zamien_elementy(tablica, i, j);
+                    i++;
+                    j--;
+                }
+                else
+                    return j; //poszukiwana granica podzialu
+            }
+        }
+}
+
+
+
 
 /*
 typ *tablica -> tablica zawierajaca dwie posortowane podtablice
@@ -137,14 +225,14 @@ template <class typ>
 void Sortowanko::heap_sort(typ *tablica, int pierwszy, int ostatni, bool rosnaco)
 {
     /*Z drzewa binarnego tworzymy kopiec */
-    for(int i=((ostatni+pierwszy-1)/2);i>=0;i--)
+    for(int i=((ostatni+pierwszy-1)/2);i>=pierwszy;i--)
     {
             heapify(tablica, pierwszy, ostatni, i, rosnaco);
     }
 
     for(int i=ostatni;i>=pierwszy;i--)
     {
-        zamien_elementy(tablica, 0, i);
+        zamien_elementy(tablica, pierwszy, i);
         /*Wywolanie kopcowania dla zredukowanego kopca*/
         heapify(tablica, pierwszy, i-1, pierwszy, rosnaco);
     }
@@ -171,40 +259,34 @@ void Sortowanko::quick_sort(typ *tablica, int pierwszy, int ostatni, bool rosnac
 {
     if(pierwszy<ostatni)
     {
-        //podziel tablice i na lewo przerzuc elementy mniejsze od i, na prawo wieksze od i
-        typ pivot=tablica[ostatni];    //element porownywany
-        int i=pierwszy, granica=pierwszy; //zmienne sterujace wypelnianiem tablic
-        if(rosnaco)
-        {
-            while(i<ostatni)
-            {
-                if(tablica[i]<pivot)
-                {
-                    zamien_elementy(tablica,i++,granica++);
-                }
-                else
-                {
-                    i++;
-                }
-            }
-        }
-        else
-        {
-            while(i<ostatni)
-            {
-                if(tablica[i]>pivot)
-                {
-                    zamien_elementy(tablica,i++,granica++);
-                }
-                else
-                {
-                    i++;
-                }
-            }
-        }
-        zamien_elementy(tablica,ostatni,granica);
-        quick_sort(tablica, pierwszy, granica-1,rosnaco);
+
+        int granica=podziel_tablice(tablica, pierwszy, ostatni,rosnaco);
+        quick_sort(tablica, pierwszy, granica,rosnaco);
         quick_sort(tablica, granica+1, ostatni, rosnaco);
     }
+}
+/*Sortowanie hybrydowe-> quick sort i heap sort*/
+template <class typ> //quick sort jako metoda statyczna klasy Sortowanie
+void Sortowanko::intro_sort_temp(typ *tablica, int pierwszy, int ostatni, bool rosnaco, int glebokosc)
+{
+	if (pierwszy < ostatni)
+	{
+		if(glebokosc <= 0)
+		{
+			heap_sort(tablica, pierwszy, ostatni, rosnaco);
+			return;
+        }
+        int granica=podziel_tablice(tablica, pierwszy, ostatni,rosnaco);
+        intro_sort_temp(tablica, pierwszy, granica,rosnaco, glebokosc-1);
+        intro_sort_temp(tablica, granica+1, ostatni,rosnaco, glebokosc-1);
+    }
+}
+
+
+template <class typ> //quick sort jako metoda statyczna klasy Sortowanie
+void Sortowanko::intro_sort(typ *tablica, int pierwszy, int ostatni, bool rosnaco)
+{
+    int glebokosc=2*log(ostatni-pierwszy);
+	intro_sort_temp(tablica, pierwszy, ostatni, rosnaco, glebokosc);
 }
 #endif
