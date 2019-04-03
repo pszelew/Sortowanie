@@ -33,11 +33,11 @@
 			<Add option="-std=c++11" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="Sortowanko.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="main.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
+		<Unit filename="sortowanko.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

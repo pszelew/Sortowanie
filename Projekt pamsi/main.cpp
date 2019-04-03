@@ -12,7 +12,7 @@ int main()
 	int ilosc_tablic=100;
     int *parametry = new int[3];
 
-    cout << "Program rozpoczyna prace...";
+    cout << "Program rozpoczyna prace..."<<endl;
 
     for(int x=1;x<=3;x++)
         for(int y=1;y<=8;y++)
@@ -25,9 +25,8 @@ int main()
                     return -1;
             }
 
-
-
     delete[] parametry;
+    cout<<" Program zakonczyl prace"<<endl;
     system("PAUSE");
 
 }
